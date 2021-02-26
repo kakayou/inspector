@@ -1,0 +1,22 @@
+---
+- name: "remove os_collect.tmp"
+  win_file:
+    path: C:\collect_result.tmp
+    state: absent
+
+- name: "copy collect script"
+  win_copy:
+    src: files/windows_collect.ps1
+    dest: C:\os_collect.ps1
+
+- name: "execute collect script"
+  win_shell: C:\windows_collect.ps1
+  args:
+    chdir: C:\
+  async: 15
+  poll: 1
+
+- name: "fetch collect result"
+  fetch:
+    src: C:\collect_result.tmp
+    dest: "{{data_dir}}"

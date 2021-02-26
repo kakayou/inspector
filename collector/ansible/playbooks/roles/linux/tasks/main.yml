@@ -1,0 +1,17 @@
+---
+- name: "copy collect script"
+  copy:
+    src: files/linux_collect.sh
+    dest: /tmp/linux_collect.sh
+
+- name: "execute collect script"
+  shell: /tmp/linux_collect.sh
+  async: 15
+  poll: 1
+  register: result
+
+- name: "fetch collect result"
+  fetch:
+    src: /tmp/collect_result.tmp
+    dest: "{{data_dir}}"
+  when: result.rc == 0
